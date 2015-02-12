@@ -25,16 +25,29 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.sdk.api.model.VKList;
 import com.vk.sdk.api.model.VKUsersArray;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.json.JSONException;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.master_igor.findme.R.layout.main;
 
-public class MainActivity extends ListActivity {
+
+public class MainActivity extends Activity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
@@ -80,6 +93,7 @@ public class MainActivity extends ListActivity {
 
     private VKRequest currentRequest;
     private Button loginButton;
+    private Button logoutButton;
 
     private final List<User> users = new ArrayList<User>();
     private List<User> myselfUser = new ArrayList<User>();
@@ -94,31 +108,31 @@ public class MainActivity extends ListActivity {
 
         setContentView(R.layout.main);
 
-        listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-                View view = super.getView(position, convertView, parent);
-
-                final User user = getItem(position);
-
-
-                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + myId);
-
-                String birthDateStr = "Не задано";
-
-                DateTime dt = user.getBirthDate();
-
-                if (dt != null) {
-                    birthDateStr = dt.toString(DateTimeFormat.forPattern(user.getDateFormat()));
-                }
-
-                ((TextView) view.findViewById(android.R.id.text2)).setText(birthDateStr);
-                return view;
-
-            }
-        };
-        setListAdapter(listAdapter);
+//        listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
+//            @Override
+//            public View getView(int position, View convertView, ViewGroup parent) {
+//
+//                View view = super.getView(position, convezrtView, parent);
+//
+//                final User user = getItem(position);
+//
+//
+//                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + myId);
+//
+//                String birthDateStr = "Не задано";
+//
+//                DateTime dt = user.getBirthDate();
+//
+//                if (dt != null) {
+//                    birthDateStr = dt.toString(DateTimeFormat.forPattern(user.getDateFormat()));
+//                }
+//
+//                ((TextView) view.findViewById(android.R.id.text2)).setText(birthDateStr);
+//                return view;
+//
+//            }
+//        };
+//        setListAdapter(listAdapter);
 
         VKSdk.initialize(sdkListener, VK_APP_ID);
 
@@ -132,11 +146,27 @@ public class MainActivity extends ListActivity {
             }
         });
 
+        logoutButton = (Button) findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    VKSdk.logout();
+                }
+            }
+        );
+
         if (VKSdk.wakeUpSession()) {
             startLoading();
         } else {
             loginButton.setVisibility(View.VISIBLE);
         }
+//
+//        if (VKSdk.isLoggedIn()) {
+//            Log.d("Login", "Yes");
+//        } else {
+//            Log.d("Login", "No");
+//        }
 
     }
 
@@ -171,8 +201,8 @@ public class MainActivity extends ListActivity {
         requestMe.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-//                VKApiUser vkApiUser = (VKApiUser) response.parsedModel;
-                VKApiUserFull user = (VKApiUserFull) response.parsedModel;
+                super.onComplete(response);
+                VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
                 myId = user.getId();
             }
 
@@ -187,56 +217,6 @@ public class MainActivity extends ListActivity {
             }
         });
 
-        currentRequest = VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS, "id,first_name,last_name,bdate"));
-        currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                super.onComplete(response);
-                Log.d("VkDemoApp", "onComplete " + response);
-
-                VKUsersArray usersArray = (VKUsersArray) response.parsedModel;
-                users.clear();
-                final String[] formats = new String[]{"dd.MM.yyyy", "dd.MM"};
-
-                for (VKApiUserFull userFull : usersArray) {
-                    DateTime birthDate = null;
-                    String format = null;
-                    if (!TextUtils.isEmpty(userFull.bdate)) {
-                        for (int i = 0; i < formats.length; i++) {
-                            format = formats[i];
-                            try {
-                                birthDate = DateTimeFormat.forPattern(format).parseDateTime(userFull.bdate);
-                            } catch (Exception ignored) {
-                            }
-                            if (birthDate != null) {
-                                break;
-                            }
-                        }
-
-                    }
-                    users.add(new User(userFull.toString(), birthDate, format));
-                }
-                listAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-                super.attemptFailed(request, attemptNumber, totalAttempts);
-                Log.d("VkDemoApp", "attemptFailed " + request + " " + attemptNumber + " " + totalAttempts);
-            }
-
-            @Override
-            public void onError(VKError error) {
-                super.onError(error);
-                Log.d("VkDemoApp", "onError: " + error);
-            }
-
-            @Override
-            public void onProgress(VKRequest.VKProgressType progressType, long bytesLoaded, long bytesTotal) {
-                super.onProgress(progressType, bytesLoaded, bytesTotal);
-                Log.d("VkDemoApp", "onProgress " + progressType + " " + bytesLoaded + " " + bytesTotal);
-            }
-        });
     }
 
 

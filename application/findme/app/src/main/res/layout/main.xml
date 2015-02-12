@@ -2,21 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
 
     <Button
         android:id="@+id/login_button"
-        android:visibility="gone"
+        android:visibility="visible"
         android:drawableLeft="@drawable/ic_ab_app"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Войти"
+        android:layout_height="59dp"
+        android:text="Sign In"
         android:singleLine="true"
-        android:background="@color/vk_share_blue_color" />
+        android:background="@color/vk_share_blue_color"
+        android:enabled="true"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/vk_white"
+        android:textAlignment="center" />
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <Button
+        android:id="@+id/logout_button"
+        android:visibility="visible"
+        android:drawableLeft="@drawable/ic_ab_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out"
+        android:singleLine="true"
+        android:background="@color/vk_share_blue_color"
+        android:enabled="true"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/vk_white"
+        android:textAlignment="center"
+        android:layout_weight="0.52" />
+
 
 </LinearLayout>

@@ -2,12 +2,6 @@ package com.master_igor.findme;
 
 import org.joda.time.DateTime;
 
-/**
- * Created by cyrusmith
- * All rights reserved
- * http://interosite.ru
- * info@interosite.ru
- */
 public class User {
 
     private final String name;
