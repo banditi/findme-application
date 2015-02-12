@@ -171,10 +171,9 @@ public class MainActivity extends ListActivity {
         requestMe.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
-                VKUsersArray usersArray = (VKUsersArray) response.parsedModel;
-                for (VKApiUserFull userFull : usersArray) {
-                    myId = userFull.getId();
-                }
+//                VKApiUser vkApiUser = (VKApiUser) response.parsedModel;
+                VKApiUserFull user = (VKApiUserFull) response.parsedModel;
+                myId = user.getId();
             }
 
             @Override
