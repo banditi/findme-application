@@ -23,6 +23,7 @@ import com.vk.sdk.api.VKError;
 import com.vk.sdk.api.VKParameters;
 import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
+import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.sdk.api.model.VKUsersArray;
 
@@ -81,8 +82,9 @@ public class MainActivity extends ListActivity {
     private Button loginButton;
 
     private final List<User> users = new ArrayList<User>();
-    private User myselfUser;
+    private List<User> myselfUser = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
+    private int myId;
 
 
     @Override
@@ -100,8 +102,8 @@ public class MainActivity extends ListActivity {
 
                 final User user = getItem(position);
 
-                VKApiUserFull userme = new VKApiUserFull();
-                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + userme.getId());
+
+                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + myId);
 
                 String birthDateStr = "Не задано";
 
@@ -165,8 +167,26 @@ public class MainActivity extends ListActivity {
             currentRequest.cancel();
         }
 
-        VKApiUserFull user = new VKApiUserFull();
-        user.getId();
+        VKRequest requestMe = VKApi.users().get();
+        requestMe.executeWithListener(new VKRequest.VKRequestListener() {
+            @Override
+            public void onComplete(VKResponse response) {
+                VKUsersArray usersArray = (VKUsersArray) response.parsedModel;
+                for (VKApiUserFull userFull : usersArray) {
+                    myId = userFull.getId();
+                }
+            }
+
+            @Override
+            public void onError(VKError error) {
+            //Do error stuff
+            }
+
+            @Override
+            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
+            //I don't really believe in progress
+            }
+        });
 
         currentRequest = VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS, "id,first_name,last_name,bdate"));
         currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
