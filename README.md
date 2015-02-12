@@ -1,1 +1,2 @@
-# findme
+# FindMe
+Project for MIPT Hackathon
