@@ -9,7 +9,10 @@
         android:visibility="gone"
         android:drawableLeft="@drawable/ic_ab_app"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="Войти"
+        android:singleLine="true"
+        android:background="@color/vk_share_blue_color" />
 
     <ListView
         android:id="@android:id/list"
