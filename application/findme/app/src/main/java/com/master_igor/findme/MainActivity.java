@@ -40,7 +40,6 @@ public class MainActivity extends ListActivity {
     private static String[] sMyScope = new String[]{VKScope.FRIENDS, VKScope.MESSAGES,
             VKScope.STATUS, VKScope.WALL, VKScope.NOHTTPS};
 
-
     private final VKSdkListener sdkListener = new VKSdkListener() {
 
         @Override
@@ -82,6 +81,7 @@ public class MainActivity extends ListActivity {
     private Button loginButton;
 
     private final List<User> users = new ArrayList<User>();
+    private User myselfUser;
     private ArrayAdapter<User> listAdapter;
 
 
@@ -100,7 +100,8 @@ public class MainActivity extends ListActivity {
 
                 final User user = getItem(position);
 
-                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName());
+                VKApiUserFull userme = new VKApiUserFull();
+                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + userme.getId());
 
                 String birthDateStr = "Не задано";
 
@@ -163,6 +164,10 @@ public class MainActivity extends ListActivity {
         if (currentRequest != null) {
             currentRequest.cancel();
         }
+
+        VKApiUserFull user = new VKApiUserFull();
+        user.getId();
+
         currentRequest = VKApi.friends().get(VKParameters.from(VKApiConst.FIELDS, "id,first_name,last_name,bdate"));
         currentRequest.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
