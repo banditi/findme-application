@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,13 +22,17 @@ public class MainActivity extends Activity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        // TODO:: check and be sure that it doesnt needed anymore with VkSdklistener
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         setContentView(R.layout.main);
+
+        Menu menu = (Menu) findViewById(R.id.action_settings);
 
         Button logoutButton = (Button) findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +51,7 @@ public class MainActivity extends Activity {
 
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -61,7 +68,6 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         VKUIHelper.onDestroy(this);
-
     }
 
     private final VKSdkListener sdkListener = new VKSdkListener() {
