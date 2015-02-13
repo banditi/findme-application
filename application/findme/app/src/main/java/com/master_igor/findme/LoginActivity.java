@@ -63,7 +63,6 @@ public class LoginActivity extends Activity {
 
     };
     private Button loginButton;
-    private Button logoutButton;
 
     private int myId;
 
@@ -87,27 +86,10 @@ public class LoginActivity extends Activity {
             }
         });
 
-        logoutButton = (Button) findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    VKSdk.logout();
-                }
-            }
-        );
-
         if (VKSdk.wakeUpSession()) {
             startLoading();
         } else {
             loginButton.setVisibility(View.VISIBLE);
-        }
-
-        if (VKSdk.isLoggedIn()) {
-            Log.d("Login", "Yes");
-            finish();
-        } else {
-            Log.d("Login", "No");
         }
 
     }
@@ -133,7 +115,16 @@ public class LoginActivity extends Activity {
 
     private void startLoading() {
 
-        loginButton.setVisibility(View.GONE);
+//        loginButton.setVisibility(View.GONE);
+
+        if (VKSdk.isLoggedIn()) {
+            Log.d("Login", "Yes");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Log.d("Login", "No");
+        }
 
         VKRequest requestMe = VKApi.users().get();
         requestMe.executeWithListener(new VKRequest.VKRequestListener() {

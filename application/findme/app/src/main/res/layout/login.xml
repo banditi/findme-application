@@ -19,19 +19,5 @@
         android:textColor="@color/vk_white"
         android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/logout_button"
-        android:visibility="visible"
-        android:drawableLeft="@drawable/ic_ab_app"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign Out"
-        android:singleLine="true"
-        android:background="@color/vk_share_blue_color"
-        android:enabled="true"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/vk_white"
-        android:textAlignment="center" />
-
 
 </LinearLayout>
