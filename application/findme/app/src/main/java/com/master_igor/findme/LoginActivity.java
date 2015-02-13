@@ -181,10 +181,6 @@ public class LoginActivity extends Activity {
 
     private class ServerID extends AsyncTask<URL, Integer, Long> {
         private int ID;
-//
-//        public ServerID(int curID) {
-//            this.ID = curID;
-//        }
 
         TextView content;
 
@@ -201,8 +197,7 @@ public class LoginActivity extends Activity {
                 HttpGet httpGet = new HttpGet(String.valueOf(params[0]));
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 setServer = client.execute(httpGet, responseHandler);
-
-                content.setText(setServer);
+                Log.d("SetServer", "getting" + setServer);
 
             } catch (ClientProtocolException e) {
                 e.printStackTrace();
