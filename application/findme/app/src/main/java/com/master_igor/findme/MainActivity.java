@@ -1,172 +1,46 @@
 package com.master_igor.findme;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.VKSdkListener;
 import com.vk.sdk.VKUIHelper;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKError;
-import com.vk.sdk.api.VKParameters;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.VKResponse;
-import com.vk.sdk.api.model.VKApiUser;
-import com.vk.sdk.api.model.VKApiUserFull;
-import com.vk.sdk.api.model.VKList;
-import com.vk.sdk.api.model.VKUsersArray;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.master_igor.findme.R.layout.main;
-
-
+/**
+ * Created by Johnny D on 13.02.2015.
+ */
 public class MainActivity extends Activity {
 
+    private Button logoutButton;
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
-    private static String[] sMyScope = new String[]{VKScope.FRIENDS, VKScope.MESSAGES,
-            VKScope.STATUS, VKScope.WALL, VKScope.NOHTTPS};
-
-    private final VKSdkListener sdkListener = new VKSdkListener() {
-
-        @Override
-        public void onAcceptUserToken(VKAccessToken token) {
-            Log.d("VkDemoApp", "onAcceptUserToken " + token);
-            startLoading();
-        }
-
-        @Override
-        public void onReceiveNewToken(VKAccessToken newToken) {
-            Log.d("VkDemoApp", "onReceiveNewToken " + newToken);
-            startLoading();
-        }
-
-        @Override
-        public void onRenewAccessToken(VKAccessToken token) {
-            Log.d("VkDemoApp", "onRenewAccessToken " + token);
-            startLoading();
-        }
-
-        @Override
-        public void onCaptchaError(VKError captchaError) {
-            Log.d("VkDemoApp", "onCaptchaError " + captchaError);
-        }
-
-        @Override
-        public void onTokenExpired(VKAccessToken expiredToken) {
-            Log.d("VkDemoApp", "onTokenExpired " + expiredToken);
-        }
-
-        @Override
-        public void onAccessDenied(VKError authorizationError) {
-            Log.d("VkDemoApp", "onAccessDenied " + authorizationError);
-        }
-
-    };
-
-    private VKRequest currentRequest;
-    private Button loginButton;
-    private Button logoutButton;
-
-    private final List<User> users = new ArrayList<User>();
-    private List<User> myselfUser = new ArrayList<User>();
-    private ArrayAdapter<User> listAdapter;
-    private int myId;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
-        setContentView(R.layout.main);
+        setContentView(R.layout.login);
 
-//        listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
-//            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//
-//                View view = super.getView(position, convezrtView, parent);
-//
-//                final User user = getItem(position);
-//
-//
-//                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName() + myId);
-//
-//                String birthDateStr = "Не задано";
-//
-//                DateTime dt = user.getBirthDate();
-//
-//                if (dt != null) {
-//                    birthDateStr = dt.toString(DateTimeFormat.forPattern(user.getDateFormat()));
-//                }
-//
-//                ((TextView) view.findViewById(android.R.id.text2)).setText(birthDateStr);
-//                return view;
-//
-//            }
-//        };
-//        setListAdapter(listAdapter);
-
-        VKSdk.initialize(sdkListener, VK_APP_ID);
-
-        VKUIHelper.onCreate(this);
-
-        loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        logoutButton = (Button) findViewById(R.id.logoutButton);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                VKSdk.authorize(VKScope.FRIENDS);
+                Log.d("MyLogin", "login" + VKSdk.isLoggedIn());
+                VKSdk.logout();
+                finish();
             }
         });
 
-        logoutButton = (Button) findViewById(R.id.logout_button);
-        logoutButton.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    VKSdk.logout();
-                }
-            }
-        );
+        VKUIHelper.onCreate(this);
 
-        if (VKSdk.wakeUpSession()) {
-            startLoading();
-        } else {
-            loginButton.setVisibility(View.VISIBLE);
-        }
-//
-//        if (VKSdk.isLoggedIn()) {
-//            Log.d("Login", "Yes");
-//        } else {
-//            Log.d("Login", "No");
-//        }
 
     }
 
@@ -186,38 +60,40 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         VKUIHelper.onDestroy(this);
-        if (currentRequest != null) {
-            currentRequest.cancel();
-        }
-    }
-
-    private void startLoading() {
-        loginButton.setVisibility(View.GONE);
-        if (currentRequest != null) {
-            currentRequest.cancel();
-        }
-
-        VKRequest requestMe = VKApi.users().get();
-        requestMe.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-                super.onComplete(response);
-                VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
-                myId = user.getId();
-            }
-
-            @Override
-            public void onError(VKError error) {
-            //Do error stuff
-            }
-
-            @Override
-            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-            //I don't really believe in progress
-            }
-        });
 
     }
 
+    private final VKSdkListener sdkListener = new VKSdkListener() {
 
+        @Override
+        public void onAcceptUserToken(VKAccessToken token) {
+            Log.d("VkDemoApp", "onAcceptUserToken " + token);
+        }
+
+        @Override
+        public void onReceiveNewToken(VKAccessToken newToken) {
+            Log.d("VkDemoApp", "onReceiveNewToken " + newToken);
+        }
+
+        @Override
+        public void onRenewAccessToken(VKAccessToken token) {
+            Log.d("VkDemoApp", "onRenewAccessToken " + token);
+        }
+
+        @Override
+        public void onCaptchaError(VKError captchaError) {
+            Log.d("VkDemoApp", "onCaptchaError " + captchaError);
+        }
+
+        @Override
+        public void onTokenExpired(VKAccessToken expiredToken) {
+            Log.d("VkDemoApp", "onTokenExpired " + expiredToken);
+        }
+
+        @Override
+        public void onAccessDenied(VKError authorizationError) {
+            Log.d("VkDemoApp", "onAccessDenied " + authorizationError);
+        }
+
+    };
 }
