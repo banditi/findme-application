@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
+    private Bundle outState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +33,6 @@ public class MainActivity extends Activity {
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         setContentView(R.layout.main);
-
-        Menu menu = (Menu) findViewById(R.id.action_settings);
-
-        Button logoutButton = (Button) findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Logout", "main activity");
-                VKSdk.logout();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         VKUIHelper.onCreate(this);
     }
@@ -65,9 +52,7 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -124,4 +109,18 @@ public class MainActivity extends Activity {
         }
 
     };
+
+    public void signOut(MenuItem item) {
+        Log.d("Logout", "main activity");
+        VKSdk.logout();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void closeApp(MenuItem item) {
+        onDestroy();
+        finish();
+        System.exit(0);
+    }
 }
