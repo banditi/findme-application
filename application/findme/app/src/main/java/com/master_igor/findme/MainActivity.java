@@ -18,6 +18,7 @@ import com.vk.sdk.api.VKError;
  */
 public class MainActivity extends Activity {
 
+    private Button logoutButton;
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
     @Override
@@ -26,16 +27,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
-        setContentView(R.layout.main);
+        setContentView(R.layout.login);
 
-        Button logoutButton = (Button) findViewById(R.id.logoutButton);
+        logoutButton = (Button) findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Logout", "main activity");
+                Log.d("MyLogin", "login" + VKSdk.isLoggedIn());
                 VKSdk.logout();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
 
