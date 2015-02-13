@@ -115,17 +115,6 @@ public class LoginActivity extends Activity {
 
     private void startLoading() {
 
-//        loginButton.setVisibility(View.GONE);
-
-        if (VKSdk.isLoggedIn()) {
-            Log.d("Login", "Yes");
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Log.d("Login", "No");
-        }
-
         VKRequest requestMe = VKApi.users().get();
         requestMe.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -146,8 +135,15 @@ public class LoginActivity extends Activity {
             }
         });
 
+        if (VKSdk.isLoggedIn()) {
+            Log.d("Login", "Yes");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Log.d("Login", "No");
+        }
     }
-
 
     public void setMyId(int myId) {
         this.myId = myId;
