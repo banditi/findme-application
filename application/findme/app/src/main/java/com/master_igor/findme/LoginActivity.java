@@ -2,10 +2,12 @@ package com.master_igor.findme;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKScope;
@@ -18,6 +20,17 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKList;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class LoginActivity extends Activity {
@@ -63,6 +76,10 @@ public class LoginActivity extends Activity {
 
     };
     private Button loginButton;
+
+    public int getMyId() {
+        return myId;
+    }
 
     private int myId;
 
@@ -122,21 +139,33 @@ public class LoginActivity extends Activity {
                 super.onComplete(response);
                 VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
                 setMyId(user.getId());
+                Log.d("Initialise myId", "is "+getMyId());
+
+                String serverURL = "http://master-igor.com/findme/addid/" + getMyId();
+                Log.d("Message", "Sending" + serverURL);
+                try {
+                    URL url = new URL(serverURL);
+                    new ServerID().execute(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onError(VKError error) {
-            //Do error stuff
+                //Do error stuff
             }
 
             @Override
             public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-            //I don't really believe in progress
+                //I don't really believe in progress
             }
         });
 
         if (VKSdk.isLoggedIn()) {
             Log.d("Login", "Yes");
+//            ServerID server = new ServerID(myId);
+
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -148,4 +177,41 @@ public class LoginActivity extends Activity {
     public void setMyId(int myId) {
         this.myId = myId;
     }
+
+
+    private class ServerID extends AsyncTask<URL, Integer, Long> {
+        private int ID;
+//
+//        public ServerID(int curID) {
+//            this.ID = curID;
+//        }
+
+        TextView content;
+
+        @Override
+        protected Long doInBackground(URL... params) {
+
+            HttpClient client = new DefaultHttpClient();
+//
+//            String serverURL = "http://master-igor.com/findme/addid/" + ID;
+
+            try {
+                String setServer = "";
+
+                HttpGet httpGet = new HttpGet(String.valueOf(params[0]));
+                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+                setServer = client.execute(httpGet, responseHandler);
+
+                content.setText(setServer);
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return Long.decode("0");
+        }
+    }
+
 }
