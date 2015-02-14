@@ -152,6 +152,7 @@ public class LoginActivity extends Activity {
                 intent = new Intent(LoginActivity.this, MainActivity.class);
                 Log.d("userID in intent", "ID: " + getMyId());
                 intent.putExtra("userID", getMyId());
+                sendBroadcast(intent);
                 Log.d("Message", "Sending " + serverURL);
                 try {
                     //sending GET request with my own ID
