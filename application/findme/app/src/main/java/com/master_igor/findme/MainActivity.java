@@ -43,9 +43,6 @@ public class MainActivity extends Activity {
 
         userID = getIntent().getIntExtra("userID", 0);
 
-        Thread thrGPS = new Thread(new GPSHandler());
-        thrGPS.start();
-
         setContentView(R.layout.main);
 
         VKUIHelper.onCreate(this);
