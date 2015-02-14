@@ -1,6 +1,7 @@
 package com.master_igor.findme;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,11 @@ import com.vk.sdk.api.VKRequest;
 import com.vk.sdk.api.VKResponse;
 import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKList;
+import com.vk.sdk.api.model.VKUsersArray;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,12 +33,13 @@ import java.net.URL;
 /**
  * Created by Johnny D on 13.02.2015.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
     private Bundle outState;
     int userID;
+    private String friendResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +49,21 @@ public class MainActivity extends Activity {
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         userID = getIntent().getIntExtra("userID", 0);
+        friendResponse = getIntent().getStringExtra("friends");
+        try {
+            JSONObject dataJSON = new JSONObject(friendResponse);
+            JSONArray friends = dataJSON.getJSONArray("items");
+            int count = friends.length();
+            for (int i = 0; i < count; i++) {
+                JSONObject tempFriend = friends.getJSONObject(i);
+                Log.d("My item: ", tempFriend.getString("name") + tempFriend.getInt("idvk") + tempFriend.getDouble("dist"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+//        Log.d("Getting friends in MAIN",(VKUsersArray) friendResponse.parsedModel);
         setContentView(R.layout.main);
-
         startService(new Intent(this, GPSHandler.class));
 
         VKUIHelper.onCreate(this);
@@ -63,9 +82,6 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
 
         return super.onOptionsItemSelected(item);
     }
