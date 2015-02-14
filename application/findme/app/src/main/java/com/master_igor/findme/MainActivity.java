@@ -123,6 +123,18 @@ public class MainActivity extends Activity {
 
     public void signOut(MenuItem item) {
         Log.d("Logout", "main activity");
+        String serverURL = "http://master-igor.com/findme/setoffline/" + userID;
+        try {
+            //sending GET request about offline with my own ID
+            URL url = new URL(serverURL);
+            Thread thr = new Thread(new ServerAPIHandler(url));
+            thr.start();
+            thr.join();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         VKSdk.logout();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);

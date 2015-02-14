@@ -95,6 +95,15 @@ public class LoginActivity extends Activity {
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         VKUIHelper.onCreate(this);
+//
+//        if (VKSdk.isLoggedIn()) {
+//            Log.d("Login", "Yes");
+//            intent = new Intent(LoginActivity.this, MainActivity.class);
+//            intent.putExtra("userID", getMyId());
+//            Log.d("userID in intent when IS LOGGEDIN", "ID: " + getMyId());
+//            startActivity(intent);
+//            finish();
+//        }
 
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -103,6 +112,12 @@ public class LoginActivity extends Activity {
                 VKSdk.authorize(VKScope.FRIENDS);
             }
         });
+
+        if (VKSdk.isLoggedIn()) {
+            Log.d("Login", "Yes");
+            intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
         if (VKSdk.wakeUpSession()) {
             startLoading();
