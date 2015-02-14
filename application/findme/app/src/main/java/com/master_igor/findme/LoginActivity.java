@@ -31,7 +31,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import com.master_igor.findme.ServerAPIHandler.*;
 
 public class LoginActivity extends Activity {
 
@@ -145,7 +145,8 @@ public class LoginActivity extends Activity {
                 Log.d("Message", "Sending" + serverURL);
                 try {
                     URL url = new URL(serverURL);
-                    new ServerID().execute(url);
+                    new ServerAPIHandler().execute(url);
+//                    new ServerID().execute(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
