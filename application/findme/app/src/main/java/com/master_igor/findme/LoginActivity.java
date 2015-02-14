@@ -156,8 +156,14 @@ public class LoginActivity extends Activity {
                 try {
                     //sending GET request with my own ID
                     URL url = new URL(serverURL);
-                    new Thread(new ServerAPIHandler(url)).start();
+                    ServerAPIHandler server = new ServerAPIHandler(url);
+                    Thread thr = new Thread(server);
+                    thr.start();
+                    thr.join();
+                    intent.putExtra("friends", server.getServerMessage());
                 } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (VKSdk.isLoggedIn()) {
