@@ -60,7 +60,7 @@ public class GPSHandler extends Service {
         @Override
         public void onLocationChanged(Location location) {
             String coord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
-                    mLastLocation.getLatitude() + "/" + mLastLocation.getLongitude();
+                    location.getLatitude() + "/" + location.getLongitude();
 
             try {
                 URL url = new URL(coord);
