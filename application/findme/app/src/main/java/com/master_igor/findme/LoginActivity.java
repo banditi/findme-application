@@ -2,6 +2,7 @@ package com.master_igor.findme;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +38,7 @@ public class LoginActivity extends Activity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
-
+    Intent intent;
 
     private final VKSdkListener sdkListener = new VKSdkListener() {
 
@@ -81,7 +82,7 @@ public class LoginActivity extends Activity {
         return myId;
     }
 
-    private int myId;
+    public int myId;
 
 
     @Override
@@ -139,16 +140,33 @@ public class LoginActivity extends Activity {
                 super.onComplete(response);
                 VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
                 setMyId(user.getId());
-                Log.d("Initialise myId", "is "+getMyId());
 
                 String serverURL = "http://master-igor.com/findme/addid/" + getMyId();
-                Log.d("Message", "Sending" + serverURL);
+
+                intent = new Intent(LoginActivity.this, MainActivity.class);
+                Log.d("userID in intent", "ID: " + getMyId());
+                intent.putExtra("userID", getMyId());
+                Log.d("Message", "Sending " + serverURL);
                 try {
                     //sending GET request with my own ID
                     URL url = new URL(serverURL);
-                    new ServerAPIHandler().execute(url);
+                    new Thread(new ServerAPIHandler(url)).start();
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                }
+                if (VKSdk.isLoggedIn()) {
+                    Log.d("Login", "Yes");
+//            Log.d("IT IS MYID", "CHECK IT" + getMyId());
+//            ServerID server = new ServerID(myId);
+
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            Log.d("userID in intent", "ID: " + getMyId());
+//            intent.putExtra("usedID", getMyId());
+
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Log.d("Login", "No");
                 }
             }
 
@@ -163,51 +181,12 @@ public class LoginActivity extends Activity {
             }
         });
 
-        if (VKSdk.isLoggedIn()) {
-            Log.d("Login", "Yes");
-//            ServerID server = new ServerID(myId);
 
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Log.d("Login", "No");
-        }
     }
 
     public void setMyId(int myId) {
         this.myId = myId;
     }
 
-
-    private class ServerID extends AsyncTask<URL, Integer, Long> {
-        private int ID;
-
-        TextView content;
-
-        @Override
-        protected Long doInBackground(URL... params) {
-
-            HttpClient client = new DefaultHttpClient();
-//
-//            String serverURL = "http://master-igor.com/findme/addid/" + ID;
-
-            try {
-                String setServer = "";
-
-                HttpGet httpGet = new HttpGet(String.valueOf(params[0]));
-                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                setServer = client.execute(httpGet, responseHandler);
-                Log.d("SetServer", "getting" + setServer);
-
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return Long.decode("0");
-        }
-    }
 
 }
