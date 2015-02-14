@@ -27,11 +27,12 @@ import java.net.URL;
 /**
  * Created by Johnny D on 13.02.2015.
  */
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
     private Bundle outState;
+    int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         // TODO:: check and be sure that it doesnt needed anymore with VkSdklistener
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
+
+        userID = getIntent().getIntExtra("userID", 0);
 
         setContentView(R.layout.main);
 
@@ -127,44 +130,22 @@ public class MainActivity extends Activity{
     }
 
     public void closeApp(MenuItem item) {
-//        Log.d("CloseApp", "executed" + "lalala");
-        VKRequest requestMe = VKApi.users().get();
-//        Log.d("CloseApp", "executed" + "lalala2");
-        requestMe.executeWithListener(new VKRequest.VKRequestListener() {
-            @Override
-            public void onComplete(VKResponse response) {
-//                Log.d("CloseApp", "executed" + "lalala3");
-                super.onComplete(response);
-                VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
-                Log.d("Initialise myId in MAIN", "is " + user.getId());
+        String serverURL = "http://master-igor.com/findme/setoffline/" + userID;
+        Log.d("URL to server", "Offline status " + serverURL);
+        try {
+            //sending GET request about offline with my own ID
+            URL url = new URL(serverURL);
+            Thread thr = new Thread(new ServerAPIHandler(url));
+            thr.start();
+            thr.join();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-                String serverURL = "http://master-igor.com/findme/setoffline/" + user.getId();
-                Log.d("Message IN MAIN", "Sending" + serverURL);
-                try {
-                    //sending GET request with my own ID
-                    URL url = new URL(serverURL);
-                    new ServerAPIHandler().execute(url);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(VKError error) {
-//                Log.d("CloseApp", "onerror" + "lalala5");
-            }
-
-            @Override
-            public void attemptFailed(VKRequest request, int attemptNumber, int totalAttempts) {
-//                Log.d("CloseApp", "attemptfailed" + "lalala5");
-            }
-        });
-//        Log.d("CloseApp", "executed" + "lalala5");
-//        onDestroy();
-//
-//        finish();
-//
-//        System.exit(0);
-
+        onDestroy();
+        finish();
+        System.exit(0);
     }
 }

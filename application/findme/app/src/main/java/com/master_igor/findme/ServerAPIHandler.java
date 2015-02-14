@@ -13,9 +13,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.net.URL;
 
-public class ServerAPIHandler extends AsyncTask <URL, Integer, Long> {
+public class ServerAPIHandler implements Runnable/*extends AsyncTask <URL, Integer, Long>*/ {
+    private URL url;
+
+    public ServerAPIHandler(URL url) {
+        this.url = url;
+    }
+
+    public ServerAPIHandler() {
+    }
+
     @Override
-    protected Long doInBackground(URL... params) {
+    public void run() {
         HttpClient client = new DefaultHttpClient();
 //
 //            String serverURL = "http://master-igor.com/findme/addid/" + ID;
@@ -23,7 +32,8 @@ public class ServerAPIHandler extends AsyncTask <URL, Integer, Long> {
         try {
             String setServer = "";
 
-            HttpGet httpGet = new HttpGet(String.valueOf(params[0]));
+            HttpGet httpGet = new HttpGet(String.valueOf(url));
+//            Log.d("ServerAPI", httpGet.getURI());
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             setServer = client.execute(httpGet, responseHandler);
             Log.d("SetServer", "getting" + setServer);
@@ -33,7 +43,5 @@ public class ServerAPIHandler extends AsyncTask <URL, Integer, Long> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return Long.decode("0");
     }
 }
