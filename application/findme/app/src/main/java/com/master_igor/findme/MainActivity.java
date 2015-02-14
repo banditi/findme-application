@@ -55,8 +55,6 @@ public class MainActivity extends ListActivity {
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
