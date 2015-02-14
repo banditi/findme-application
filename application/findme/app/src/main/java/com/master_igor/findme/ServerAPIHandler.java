@@ -26,14 +26,12 @@ public class ServerAPIHandler implements Runnable/*extends AsyncTask <URL, Integ
     @Override
     public void run() {
         HttpClient client = new DefaultHttpClient();
-//
-//            String serverURL = "http://master-igor.com/findme/addid/" + ID;
 
         try {
             String setServer = "";
 
             HttpGet httpGet = new HttpGet(String.valueOf(url));
-//            Log.d("ServerAPI", httpGet.getURI());
+            
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             setServer = client.execute(httpGet, responseHandler);
             Log.d("SetServer", "getting" + setServer);

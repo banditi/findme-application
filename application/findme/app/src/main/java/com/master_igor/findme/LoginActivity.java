@@ -95,15 +95,6 @@ public class LoginActivity extends Activity {
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         VKUIHelper.onCreate(this);
-//
-//        if (VKSdk.isLoggedIn()) {
-//            Log.d("Login", "Yes");
-//            intent = new Intent(LoginActivity.this, MainActivity.class);
-//            intent.putExtra("userID", getMyId());
-//            Log.d("userID in intent when IS LOGGEDIN", "ID: " + getMyId());
-//            startActivity(intent);
-//            finish();
-//        }
 
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -171,13 +162,6 @@ public class LoginActivity extends Activity {
                 }
                 if (VKSdk.isLoggedIn()) {
                     Log.d("Login", "Yes");
-//            Log.d("IT IS MYID", "CHECK IT" + getMyId());
-//            ServerID server = new ServerID(myId);
-
-//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//            Log.d("userID in intent", "ID: " + getMyId());
-//            intent.putExtra("usedID", getMyId());
-
                     startActivity(intent);
                     finish();
                 } else {

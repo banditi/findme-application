@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class GPSHandler extends Service {
 
-        private static final String TAG = "BOOMBOOMTESTGPS";
+        private static final String TAG = "GPS message";
         private LocationManager mLocationManager = null;
         private static final int LOCATION_INTERVAL = 1000;
         private static final float LOCATION_DISTANCE = 10f;
