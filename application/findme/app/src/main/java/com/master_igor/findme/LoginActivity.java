@@ -134,13 +134,13 @@ public class LoginActivity extends Activity {
 
 
 
-    private void sendMessageToGPService() {
-        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
-        // You can also include some extra data.
-        intent.putExtra("userID", getMyId());
-        Log.d("here we are", ""+getMyId());
-        startService(intent);
-    }
+//    private void sendMessageToGPService() {
+//        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
+//        // You can also include some extra data.
+//        intent.putExtra("userID", getMyId());
+//        Log.d("here we are", ""+getMyId());
+//        startService(intent);
+//    }
 
     private void startLoading() {
 
@@ -174,7 +174,7 @@ public class LoginActivity extends Activity {
 
                 if (VKSdk.isLoggedIn()) {
                     Log.d("Login", "Yes");
-                    sendMessageToGPService();
+//                    sendMessageToGPService();
                     startActivity(intent);
                     finish();
                 } else {

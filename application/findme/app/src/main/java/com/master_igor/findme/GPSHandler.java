@@ -23,11 +23,12 @@ import java.text.DecimalFormat;
 public class GPSHandler extends Service {
 
     private static final String TAG = "GPS message";
+    final static String GET_GPS = "GET_GPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
     public int userID;
-    Intent intent;
+    public Intent intent;
 
     /*public int getUserID() {
         return userID;
@@ -99,8 +100,10 @@ public class GPSHandler extends Service {
                 Thread thr = new Thread(server);
                 thr.start();
                 thr.join();
-                intent = new Intent(GPSHandler.this, MainActivity.class);
+                intent = new Intent();
+                intent.setAction(GET_GPS);
                 intent.putExtra("friendsGPS", server.getServerMessage());
+                sendBroadcast(intent);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -139,6 +142,7 @@ public class GPSHandler extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+//        this.intent = intent;
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         userID = intent.getIntExtra("userID", 0);

@@ -55,6 +55,26 @@ public class MainActivity extends ListActivity {
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
 
+    MyReceiver myReceiver;
+
+    private void sendMessageToGPService() {
+//        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
+
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(GPSHandler.GET_GPS);
+        registerReceiver(myReceiver, intentFilter);
+
+        //Start our own service
+        Intent intent = new Intent(MainActivity.this, GPSHandler.class);
+//        startService(intent);
+
+        // You can also include some extra data.
+        intent.putExtra("userID", userID);
+        Log.d("here we are", "" + userID);
+        startService(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -105,6 +125,8 @@ public class MainActivity extends ListActivity {
         setListAdapter(listAdapter);
 
         VKUIHelper.onCreate(this);
+
+        sendMessageToGPService();
     }
 
     @Override
@@ -215,5 +237,14 @@ public class MainActivity extends ListActivity {
         onDestroy();
         finish();
         System.exit(0);
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String data = intent.getStringExtra("friendsGPS");
+            Log.d("onReceive", data);
+        }
     }
 }
