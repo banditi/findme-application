@@ -40,9 +40,19 @@ public class GPSHandler extends Service {
         Location mLastLocation;
 
         public LocationListener(String provider) {
+            String strLat = "", strLon = "";
 
-            String strLat = String.valueOf(mLastLocation.getLatitude()).replace(",", ".");
-            String strLon = String.valueOf( mLastLocation.getLongitude()).replace(",", ".");
+            try {
+                strLat = String.valueOf(mLastLocation.getLatitude()).replace(",", ".");
+            } catch (NullPointerException e) {
+                strLat = "0";
+            }
+
+            try {
+                strLon = String.valueOf(mLastLocation.getLongitude()).replace(",", ".");
+            } catch (NullPointerException e) {
+                strLon = "0";
+            }
 
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
@@ -65,9 +75,19 @@ public class GPSHandler extends Service {
         @Override
         public void onLocationChanged(Location location) {
 
-            String strLat = String.valueOf(location.getLatitude()).replace(",", ".");
-            String strLon = String.valueOf( location.getLongitude()).replace(",", ".");
+            String strLat = "", strLon = "";
 
+            try {
+                strLat = String.valueOf(location.getLatitude()).replace(",", ".");
+            } catch (NullPointerException e) {
+                strLat = "0";
+            }
+
+            try {
+                strLon = String.valueOf(location.getLongitude()).replace(",", ".");
+            } catch (NullPointerException e) {
+                strLon = "0";
+            }
             String coord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
                     strLat + "/" + strLon;
 
@@ -116,9 +136,9 @@ public class GPSHandler extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
-//        super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
 
-        userID = intent.getIntExtra("userID", 0);
+        setUserID(intent.getIntExtra("userID", 0));
         return START_STICKY;
     }
 

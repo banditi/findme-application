@@ -138,6 +138,7 @@ public class LoginActivity extends Activity {
         Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
         // You can also include some extra data.
         intent.putExtra("userID", getMyId());
+        Log.d("here we are", ""+getMyId());
         startService(intent);
     }
 
