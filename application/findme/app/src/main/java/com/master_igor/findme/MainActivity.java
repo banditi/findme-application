@@ -45,6 +45,8 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.main);
 
+        startService(new Intent(this, GPSHandler.class));
+
         VKUIHelper.onCreate(this);
     }
 
