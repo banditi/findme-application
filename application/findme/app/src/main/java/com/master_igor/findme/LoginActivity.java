@@ -105,12 +105,6 @@ public class LoginActivity extends Activity {
             }
         });
 
-        if (VKSdk.isLoggedIn()) {
-            Log.d("Login", "Yes");
-            intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-        }
-
         if (VKSdk.wakeUpSession()) {
             startLoading();
             sendMessageToGPService();
