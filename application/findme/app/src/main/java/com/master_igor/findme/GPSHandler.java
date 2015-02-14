@@ -24,16 +24,6 @@ public class GPSHandler extends Service {
     private static final float LOCATION_DISTANCE = 10f;
     private int userID;
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            userID = intent.getIntExtra("userID", 0);
-            Log.d("userID", "from gps" + userID);
-            // Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        }
-    };
-
 
 
     private class LocationListener implements android.location.LocationListener {
@@ -81,8 +71,10 @@ public class GPSHandler extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
+//        super.onStartCommand(intent, flags, startId);
 
-        super.onStartCommand(intent, flags, startId);
+        userID = intent.getIntExtra("userID", 0);
+        Log.d("userID", "In GPS" + userID);
         return START_STICKY;
     }
 
@@ -109,8 +101,8 @@ public class GPSHandler extends Service {
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("GPSuserID"));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(
+//                mMessageReceiver, new IntentFilter("GPSuserID"));
     }
 
     @Override
