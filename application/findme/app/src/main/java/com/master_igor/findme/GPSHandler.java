@@ -26,15 +26,17 @@ public class GPSHandler extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 10f;
-    private int userID;
+    public int userID;
+    Intent intent;
 
-    public int getUserID() {
+    /*public int getUserID() {
         return userID;
     }
 
     public void setUserID(int userID) {
+        Log.d("GetId", "" + userID);
         this.userID = userID;
-    }
+    }*/
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -56,7 +58,7 @@ public class GPSHandler extends Service {
 
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-            String firstCoord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
+            String firstCoord = "http://master-igor.com/findme/setcoord/" + userID + "/" +
                     strLat + "/" + strLon;
             Log.d("FIRST", firstCoord);
             try {
@@ -88,7 +90,7 @@ public class GPSHandler extends Service {
             } catch (NullPointerException e) {
                 strLon = "0";
             }
-            String coord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
+            String coord = "http://master-igor.com/findme/setcoord/" + userID + "/" +
                     strLat + "/" + strLon;
 
             try {
@@ -97,6 +99,8 @@ public class GPSHandler extends Service {
                 Thread thr = new Thread(server);
                 thr.start();
                 thr.join();
+                intent = new Intent(GPSHandler.this, MainActivity.class);
+                intent.putExtra("friendsGPS", server.getServerMessage());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -137,8 +141,8 @@ public class GPSHandler extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
-
-        setUserID(intent.getIntExtra("userID", 0));
+        userID = intent.getIntExtra("userID", 0);
+        Log.d("StrCmd", "" + userID);
         return START_STICKY;
     }
 
