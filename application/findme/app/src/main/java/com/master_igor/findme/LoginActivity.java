@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -112,6 +113,7 @@ public class LoginActivity extends Activity {
 
         if (VKSdk.wakeUpSession()) {
             startLoading();
+            sendMessageToGPService();
         } else {
             loginButton.setVisibility(View.VISIBLE);
         }
@@ -134,7 +136,15 @@ public class LoginActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         VKUIHelper.onDestroy(this);
+    }
 
+
+
+    private void sendMessageToGPService() {
+        Intent intent = new Intent("GPSuserID");
+        // You can also include some extra data.
+        intent.putExtra("userID", getMyId());
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     private void startLoading() {

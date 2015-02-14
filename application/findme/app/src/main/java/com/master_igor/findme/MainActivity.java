@@ -2,8 +2,13 @@ package com.master_igor.findme;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +40,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.app.PendingIntent.getActivity;
+
 /**
  * Created by Johnny D on 13.02.2015.
  */
@@ -47,6 +54,9 @@ public class MainActivity extends ListActivity {
     private String friendResponse;
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -73,6 +83,9 @@ public class MainActivity extends ListActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
+//                mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
 
 //        Log.d("Getting friends in MAIN",(VKUsersArray) friendResponse.parsedModel);
         setContentView(R.layout.main);
