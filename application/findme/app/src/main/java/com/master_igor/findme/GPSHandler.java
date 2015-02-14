@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
 
 public class GPSHandler extends Service {
 
@@ -39,10 +40,14 @@ public class GPSHandler extends Service {
         Location mLastLocation;
 
         public LocationListener(String provider) {
+
+            String strLat = String.valueOf(mLastLocation.getLatitude()).replace(",", ".");
+            String strLon = String.valueOf( mLastLocation.getLongitude()).replace(",", ".");
+
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
             String firstCoord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
-                    mLastLocation.getLatitude() + "/" + mLastLocation.getLongitude();
+                    strLat + "/" + strLon;
             Log.d("FIRST", firstCoord);
             try {
                 URL url = new URL(firstCoord);
@@ -59,8 +64,12 @@ public class GPSHandler extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
+
+            String strLat = String.valueOf(location.getLatitude()).replace(",", ".");
+            String strLon = String.valueOf( location.getLongitude()).replace(",", ".");
+
             String coord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
-                    location.getLatitude() + "/" + location.getLongitude();
+                    strLat + "/" + strLon;
 
             try {
                 URL url = new URL(coord);
