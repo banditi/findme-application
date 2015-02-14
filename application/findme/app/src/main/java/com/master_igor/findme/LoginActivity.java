@@ -132,16 +132,6 @@ public class LoginActivity extends Activity {
         VKUIHelper.onDestroy(this);
     }
 
-
-
-//    private void sendMessageToGPService() {
-//        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
-//        // You can also include some extra data.
-//        intent.putExtra("userID", getMyId());
-//        Log.d("here we are", ""+getMyId());
-//        startService(intent);
-//    }
-
     private void startLoading() {
 
         VKRequest requestMe = VKApi.users().get();
@@ -165,7 +155,6 @@ public class LoginActivity extends Activity {
                     Thread thr = new Thread(server);
                     thr.start();
                     thr.join();
-                    intent.putExtra("friends", server.getServerMessage());
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
