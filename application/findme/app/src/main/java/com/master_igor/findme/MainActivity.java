@@ -106,8 +106,6 @@ public class MainActivity extends ListActivity {
         };
         setListAdapter(listAdapter);
 
-        startService(new Intent(this, GPSHandler.class));
-
         VKUIHelper.onCreate(this);
     }
 

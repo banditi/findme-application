@@ -107,7 +107,7 @@ public class LoginActivity extends Activity {
 
         if (VKSdk.wakeUpSession()) {
             startLoading();
-            sendMessageToGPService();
+
         } else {
             loginButton.setVisibility(View.VISIBLE);
         }
@@ -135,10 +135,10 @@ public class LoginActivity extends Activity {
 
 
     private void sendMessageToGPService() {
-        Intent intent = new Intent("GPSuserID");
+        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
         // You can also include some extra data.
         intent.putExtra("userID", getMyId());
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        startService(intent);
     }
 
     private void startLoading() {
@@ -170,8 +170,10 @@ public class LoginActivity extends Activity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
                 if (VKSdk.isLoggedIn()) {
                     Log.d("Login", "Yes");
+                    sendMessageToGPService();
                     startActivity(intent);
                     finish();
                 } else {
