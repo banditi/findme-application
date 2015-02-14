@@ -57,6 +57,7 @@ public class GPSHandler extends Service {
                 strLon = "0";
             }
 
+            // TODO:: adding first coordinates
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
             String firstCoord = "http://master-igor.com/findme/setcoord/" + userID + "/" +

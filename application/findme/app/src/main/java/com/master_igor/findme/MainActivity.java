@@ -58,8 +58,6 @@ public class MainActivity extends ListActivity {
     MyReceiver myReceiver;
 
     private void sendMessageToGPService() {
-//        Intent intent = new Intent(getApplicationContext(), GPSHandler.class);
-
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(GPSHandler.GET_GPS);
@@ -67,7 +65,6 @@ public class MainActivity extends ListActivity {
 
         //Start our own service
         Intent intent = new Intent(MainActivity.this, GPSHandler.class);
-//        startService(intent);
 
         // You can also include some extra data.
         intent.putExtra("userID", userID);
@@ -83,7 +80,30 @@ public class MainActivity extends ListActivity {
         VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         userID = getIntent().getIntExtra("userID", 0);
-        friendResponse = getIntent().getStringExtra("friends");
+
+        String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
+        try {
+            //sending GET request with my own ID
+            URL url = new URL(serverURL);
+            ServerAPIHandler server = new ServerAPIHandler(url);
+            Thread thr = new Thread(server);
+            thr.start();
+            thr.join();
+            setFriends(server.getServerMessage());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setContentView(R.layout.main);
+
+        VKUIHelper.onCreate(this);
+
+        sendMessageToGPService();
+    }
+
+    void setFriends(String friendResponse) {
+        users.clear();
         try {
             JSONObject dataJSON = new JSONObject(friendResponse);
             JSONArray friends = dataJSON.getJSONArray("items");
@@ -102,11 +122,6 @@ public class MainActivity extends ListActivity {
             e.printStackTrace();
         }
 
-//        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
-//                mMessageReceiver, new IntentFilter("GPSLocationUpdates"));
-
-//        Log.d("Getting friends in MAIN",(VKUsersArray) friendResponse.parsedModel);
-        setContentView(R.layout.main);
         listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -123,10 +138,6 @@ public class MainActivity extends ListActivity {
             }
         };
         setListAdapter(listAdapter);
-
-        VKUIHelper.onCreate(this);
-
-        sendMessageToGPService();
     }
 
     @Override
@@ -244,6 +255,7 @@ public class MainActivity extends ListActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String data = intent.getStringExtra("friendsGPS");
+            setFriends(data);
             Log.d("onReceive", data);
         }
     }
