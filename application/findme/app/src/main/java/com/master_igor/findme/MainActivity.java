@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
@@ -54,6 +55,28 @@ public class MainActivity extends ListActivity {
     private String friendResponse;
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
+    public Handler handler = new Handler();
+    private Runnable r = new Runnable() {
+
+        @Override
+        public void run() {
+            String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
+            try {
+                //sending GET request with my own ID
+                URL url = new URL(serverURL);
+                ServerAPIHandler server = new ServerAPIHandler(url);
+                Thread thr = new Thread(server);
+                thr.start();
+                thr.join();
+                setFriends(server.getServerMessage());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+                handler.postDelayed(r, 10000);
+        }
+    };
 
     MyReceiver myReceiver;
 
@@ -81,20 +104,21 @@ public class MainActivity extends ListActivity {
 
         userID = getIntent().getIntExtra("userID", 0);
 
-        String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
-        try {
-            //sending GET request with my own ID
-            URL url = new URL(serverURL);
-            ServerAPIHandler server = new ServerAPIHandler(url);
-            Thread thr = new Thread(server);
-            thr.start();
-            thr.join();
-            setFriends(server.getServerMessage());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
+//        try {
+//            //sending GET request with my own ID
+//            URL url = new URL(serverURL);
+//            ServerAPIHandler server = new ServerAPIHandler(url);
+//            Thread thr = new Thread(server);
+//            thr.start();
+//            thr.join();
+//            setFriends(server.getServerMessage());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        handler.post(r);
         setContentView(R.layout.main);
 
         VKUIHelper.onCreate(this);
@@ -170,6 +194,12 @@ public class MainActivity extends ListActivity {
         VKUIHelper.onActivityResult(this, requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onStop() {
+        unregisterReceiver(myReceiver);
+        handler.removeCallbacks(r);
+        super.onStop();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
