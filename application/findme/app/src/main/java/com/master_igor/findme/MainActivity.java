@@ -9,7 +9,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKSdk;
@@ -29,6 +32,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Johnny D on 13.02.2015.
@@ -37,10 +42,11 @@ public class MainActivity extends ListActivity {
 
     private static String VK_APP_ID = "4777396";
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
-    private Bundle outState;
+
     int userID;
     private String friendResponse;
-
+    private final List<User> users = new ArrayList<User>();
+    private ArrayAdapter<User> listAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,7 +62,13 @@ public class MainActivity extends ListActivity {
             int count = friends.length();
             for (int i = 0; i < count; i++) {
                 JSONObject tempFriend = friends.getJSONObject(i);
-                Log.d("My item: ", tempFriend.getString("name") + tempFriend.getInt("idvk") + tempFriend.getDouble("dist"));
+                User user = new User(tempFriend.getString("name"));
+                user.setDistance(tempFriend.getInt("dist"));
+                user.setIdvk(tempFriend.getInt("idvk"));
+                user.setLatitude(tempFriend.getDouble("lat"));
+                user.setLongitude(tempFriend.getDouble("lng"));
+                users.add(user);
+                Log.d("My item: ", "lala");
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -64,6 +76,23 @@ public class MainActivity extends ListActivity {
 
 //        Log.d("Getting friends in MAIN",(VKUsersArray) friendResponse.parsedModel);
         setContentView(R.layout.main);
+        listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+
+                final User user = getItem(position);
+
+                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName());
+
+                ((TextView) view.findViewById(android.R.id.text2)).setText("distance: " + user.getDistance() + " m");
+                return view;
+
+            }
+        };
+        setListAdapter(listAdapter);
+
         startService(new Intent(this, GPSHandler.class));
 
         VKUIHelper.onCreate(this);

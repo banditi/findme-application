@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">findme</string>
+    <string name="app_name">FindMe</string>
     <string name="hello_world">Hello world!</string>
     <string name="close_app">Close</string>
     <string name="sign_out">Sign Out</string>
