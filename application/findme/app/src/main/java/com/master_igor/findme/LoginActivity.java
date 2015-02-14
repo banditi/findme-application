@@ -144,9 +144,9 @@ public class LoginActivity extends Activity {
                 String serverURL = "http://master-igor.com/findme/addid/" + getMyId();
                 Log.d("Message", "Sending" + serverURL);
                 try {
+                    //sending GET request with my own ID
                     URL url = new URL(serverURL);
                     new ServerAPIHandler().execute(url);
-//                    new ServerID().execute(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
