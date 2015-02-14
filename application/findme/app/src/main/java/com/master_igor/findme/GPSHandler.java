@@ -16,6 +16,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class GPSHandler extends Service {
 
     private static final String TAG = "GPS message";
@@ -24,7 +27,13 @@ public class GPSHandler extends Service {
     private static final float LOCATION_DISTANCE = 10f;
     private int userID;
 
+    public int getUserID() {
+        return userID;
+    }
 
+    public void setUserID(int userID) {
+        this.userID = userID;
+    }
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -32,11 +41,38 @@ public class GPSHandler extends Service {
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
-            Log.e(TAG, "Sex: " + mLastLocation);
+            String firstCoord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
+                    mLastLocation.getLatitude() + "/" + mLastLocation.getLongitude();
+            Log.d("FIRST", firstCoord);
+            try {
+                URL url = new URL(firstCoord);
+                ServerAPIHandler server = new ServerAPIHandler(url);
+                Thread thr = new Thread(server);
+                thr.start();
+                thr.join();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void onLocationChanged(Location location) {
+            String coord = "http://master-igor.com/findme/setcoord/" + getUserID() + "/" +
+                    mLastLocation.getLatitude() + "/" + mLastLocation.getLongitude();
+
+            try {
+                URL url = new URL(coord);
+                ServerAPIHandler server = new ServerAPIHandler(url);
+                Thread thr = new Thread(server);
+                thr.start();
+                thr.join();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
 
@@ -74,7 +110,6 @@ public class GPSHandler extends Service {
 //        super.onStartCommand(intent, flags, startId);
 
         userID = intent.getIntExtra("userID", 0);
-        Log.d("userID", "In GPS" + userID);
         return START_STICKY;
     }
 
