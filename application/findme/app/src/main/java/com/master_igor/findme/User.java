@@ -9,6 +9,7 @@ public class User {
     private double latitude;
     private double longitude;
     private int distance;
+    private String img;
 
     public User() { }
 
@@ -50,5 +51,13 @@ public class User {
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }
