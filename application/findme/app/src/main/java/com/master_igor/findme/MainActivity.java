@@ -180,23 +180,29 @@ public class MainActivity extends ListActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.cnt_mnu_geo:
-                String uri = String.format(Locale.ENGLISH, "google.navigation:q=%.6f,%.6f&mode=w",
+                String uriGM = String.format(Locale.ENGLISH, "google.navigation:q=%.6f,%.6f&mode=w",
                         users.get(info.position).getLatitude(),
                         users.get(info.position).getLongitude(),
                         users.get(info.position).getName());
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                Intent intentGM = new Intent(Intent.ACTION_VIEW, Uri.parse(uriGM));
 
-                intent.setPackage("com.google.android.apps.maps");
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
+                intentGM.setPackage("com.google.android.apps.maps");
+                if (intentGM.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intentGM);
                 } else {
                     Toast.makeText(this, "Warning! " + "There is no GoogleMaps in your Android", Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.cnt_mnu_share:
-                Toast.makeText(this, "Share : " + users.get(info.position).getName(), Toast.LENGTH_SHORT).show();
+            case R.id.cnt_mnu_write:
+                String uriVK = String.format("vkontakte://profile/%d", users.get(info.position).getIdvk());
+                Intent intentVK = new Intent(Intent.ACTION_VIEW, Uri.parse(uriVK));
+                if (intentVK.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intentVK);
+                } else {
+                    Toast.makeText(this, "Warning! " + "There is no VK app in your Android", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
         }
@@ -238,6 +244,7 @@ public class MainActivity extends ListActivity {
         handler.removeCallbacks(r);
         super.onStop();
     }
+
     @Override
     protected void onDestroy() {
 //        Log.d("Destroy", "" + userID);
