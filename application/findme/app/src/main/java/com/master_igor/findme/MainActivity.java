@@ -80,7 +80,7 @@ public class MainActivity extends ListActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-                handler.postDelayed(r, 10000);
+            handler.postDelayed(r, 10000);
         }
     };
 
@@ -103,18 +103,26 @@ public class MainActivity extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         userID = getIntent().getIntExtra("userID", 0);
-        handler.post(r);
+
+//        if (savedInstanceState != null) {
+//            // Restore value of members from saved state
+//            userID = savedInstanceState.getInt("userID");
+//        } else {
+//            // Probably initialize members with default values for a new instance
+//            Log.d("NULL_BUNDLE", "" + userID);
+//        }
+//        Log.d("Create", "" + userID);
         setContentView(R.layout.main);
 
         VKUIHelper.onCreate(this);
+//
+//        sendMessageToGPService();
 
-        sendMessageToGPService();
-
-        registerForContextMenu(getListView());
+//        registerForContextMenu(getListView());
+//        handler.post(r);
     }
 
     void setFriends(String friendResponse) {
@@ -174,7 +182,7 @@ public class MainActivity extends ListActivity {
 
         switch(item.getItemId()){
             case R.id.cnt_mnu_geo:
-                String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=Matterhorn&z=8",
+                String uri = String.format(Locale.ENGLISH, "geo:%.4f,%.4f?q=%.4f,%.4f&z=3",
                         users.get(info.position).getLatitude(),
                         users.get(info.position).getLongitude(),
                         users.get(info.position).getLatitude(),
@@ -210,6 +218,11 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        sendMessageToGPService();
+        registerForContextMenu(getListView());
+        handler.post(r);
+//        Log.d("Resume", "" + userID);
         VKUIHelper.onResume(this);
     }
 
@@ -221,16 +234,43 @@ public class MainActivity extends ListActivity {
 
     @Override
     protected void onStop() {
+//        Log.d("Stop", "" + userID);
         unregisterReceiver(myReceiver);
         handler.removeCallbacks(r);
         super.onStop();
     }
     @Override
     protected void onDestroy() {
+//        Log.d("Destroy", "" + userID);
         super.onDestroy();
         stopService(intent);
         VKUIHelper.onDestroy(this);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+//        Log.d("Start", "" + userID);
+    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        try {
+//            outState.putInt("userID", userID);
+//            Log.d("SaveInst", "" + userID);
+//        } catch (NullPointerException e) {
+//
+//        }
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle state) {
+//        super.onRestoreInstanceState(state);
+//
+//        userID = state.getInt("userID");
+//        Log.d("RestoreInst", "" + userID);
+//    }
 
     private final VKSdkListener sdkListener = new VKSdkListener() {
 
@@ -304,6 +344,12 @@ public class MainActivity extends ListActivity {
         onDestroy();
         finish();
         System.exit(0);
+    }
+
+    public void openSettings(MenuItem item) {
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+//        onPause();
     }
 
     private class MyReceiver extends BroadcastReceiver {
