@@ -163,6 +163,7 @@ public class LoginActivity extends Activity {
 
                 if (VKSdk.isLoggedIn()) {
                     Log.d("Login", "Yes");
+                    loginButton.setVisibility(View.GONE);
 //                    sendMessageToGPService();
                     startActivity(intent);
                     finish();

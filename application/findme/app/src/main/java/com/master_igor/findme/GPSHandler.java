@@ -143,7 +143,7 @@ public class GPSHandler extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        this.intent = intent;
+        this.intent = intent;
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
         userID = intent.getIntExtra("userID", 0);

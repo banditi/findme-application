@@ -1,0 +1,47 @@
+﻿reword 3871065 Don't work, need fixes
+pick 58ef05c Checking sending msg from act to service
+pick f026330 GPS get userid
+pick a9c1e1b send coords to server
+pick b0059fd Add icon launcher :ice_cream:
+pick 4dcfae3 change mLastLocation to location
+pick 088000f change comma to dot in coord
+pick e7d1c03 TODO correct userid in gps
+pick cb18bb0 working GPS
+pick e9086d9 working broadcast with mainactivity
+pick 21406e4 cleaning and todo
+pick 713194a 2:18
+pick 4d83274 google maps pricry4ens
+pick ed5e99e google maps is working
+pick e364fae Check marker google map
+pick 80adec0 Kill service when app is closed
+pick 3f49f36 Correct return to main activity from setting and GEO
+pick dc7dc74 some changes in geo :mag:
+pick f59a5b4 navigation
+pick 192a9f3 without name in nav path
+pick 3c64a95 Check send message in VK
+pick dd80055 settings for maximum distance
+pick 63f7772 vk.com/write<id>
+pick 3237742 add image to user
+pick cabdaee with img - lat's go
+pick 0322e05 saving bitmap
+pick 51104b0 final on presentation :v:
+pick c0d0efe update README.md
+
+# Rebase cc7b02c..c0d0efe onto cc7b02c
+#
+# Commands:
+#  p, pick = use commit
+#  r, reword = use commit, but edit the commit message
+#  e, edit = use commit, but stop for amending
+#  s, squash = use commit, but meld into previous commit
+#  f, fixup = like "squash", but discard this commit's log message
+#  x, exec = run command (the rest of the line) using shell
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out
+
