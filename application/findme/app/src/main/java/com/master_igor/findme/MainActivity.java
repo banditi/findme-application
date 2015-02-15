@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -150,7 +152,7 @@ public class MainActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        listAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_2, android.R.id.text1, users) {
+        listAdapter = new ArrayAdapter<User>(this, R.layout.myitem, R.id.firstLine, users) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -158,9 +160,12 @@ public class MainActivity extends ListActivity {
 
                 final User user = getItem(position);
 
-                ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName());
+                ((TextView) view.findViewById(R.id.firstLine)).setText(user.getName());
 
-                ((TextView) view.findViewById(android.R.id.text2)).setText("Distance: " + user.getDistance() + " m");
+                ((TextView) view.findViewById(R.id.secondLine)).setText("Distance: " + user.getDistance() + " m");
+
+//                ((ImageView) view.findViewById(R.id.avatar)).setImageResource();
+
                 return view;
 
             }
