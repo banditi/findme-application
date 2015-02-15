@@ -7,18 +7,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKSdk;
@@ -40,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -99,31 +104,16 @@ public class MainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        // TODO:: check and be sure that it doesnt needed anymore with VkSdklistener
-        VKSdk.initialize(sdkListener, VK_APP_ID, VKAccessToken.tokenFromSharedPreferences(this, tokenKey));
 
         userID = getIntent().getIntExtra("userID", 0);
-
-//        String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
-//        try {
-//            //sending GET request with my own ID
-//            URL url = new URL(serverURL);
-//            ServerAPIHandler server = new ServerAPIHandler(url);
-//            Thread thr = new Thread(server);
-//            thr.start();
-//            thr.join();
-//            setFriends(server.getServerMessage());
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         handler.post(r);
         setContentView(R.layout.main);
 
         VKUIHelper.onCreate(this);
 
         sendMessageToGPService();
+
+        registerForContextMenu(getListView());
     }
 
     void setFriends(String friendResponse) {
@@ -168,6 +158,35 @@ public class MainActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.actions, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId()){
+            case R.id.cnt_mnu_geo:
+                String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f",
+                        users.get(info.position).getLatitude(),
+                        users.get(info.position).getLongitude(),
+                        users.get(info.position).getLatitude(),
+                        users.get(info.position).getLongitude());
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                startActivity(intent);
+//                Toast.makeText(this, "Edit : " + users.get(info.position).getName(), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.cnt_mnu_share:
+                Toast.makeText(this, "Share : " + users.get(info.position).getName(), Toast.LENGTH_SHORT).show();
+                break;
+
+        }
         return true;
     }
 

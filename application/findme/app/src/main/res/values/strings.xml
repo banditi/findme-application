@@ -6,4 +6,8 @@
     <string name="close_app">Close</string>
     <string name="sign_out">Sign Out</string>
 
+    <string name="str_cnt_mnu_geo">Google Maps</string>
+    <string name="str_cnt_mnu_share">Share</string>
+    <string name="str_cnt_mnu_delete">Delete</string>
+
 </resources>
