@@ -206,7 +206,13 @@ public class MainActivity extends ListActivity {
                 if (intentVK.resolveActivity(getPackageManager()) != null) {
                     startActivity(intentVK);
                 } else {
-                    Toast.makeText(this, "Warning! " + "There is no VK app in your Android", Toast.LENGTH_SHORT).show();
+                    String uriVKbro = String.format("http://vk.com/write%d", users.get(info.position).getIdvk());
+                    Intent intentVKbro = new Intent(Intent.ACTION_VIEW, Uri.parse(uriVKbro));
+                    if (intentVKbro.resolveActivity(getPackageManager()) != null) {
+                        startActivity(intentVKbro);
+                    } else {
+                        Toast.makeText(this, "Warning! " + "There is no Bro in your Android", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
 
