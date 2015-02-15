@@ -173,14 +173,19 @@ public class MainActivity extends ListActivity {
 
         switch(item.getItemId()){
             case R.id.cnt_mnu_geo:
-                String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f",
+                String uri = String.format(Locale.ENGLISH, "geo:%f,%f",
                         users.get(info.position).getLatitude(),
                         users.get(info.position).getLongitude(),
                         users.get(info.position).getLatitude(),
                         users.get(info.position).getLongitude());
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                startActivity(intent);
-//                Toast.makeText(this, "Edit : " + users.get(info.position).getName(), Toast.LENGTH_SHORT).show();
+
+                intent.setPackage("com.google.android.apps.maps");
+//                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+                Toast.makeText(this, "Warning! " + "There is no GoogleMaps in your Android", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.cnt_mnu_share:
                 Toast.makeText(this, "Share : " + users.get(info.position).getName(), Toast.LENGTH_SHORT).show();
