@@ -10,6 +10,8 @@ public class User {
     private double longitude;
     private int distance;
 
+    public User() { }
+
     public User(String name) {
         this.name = name;
     }

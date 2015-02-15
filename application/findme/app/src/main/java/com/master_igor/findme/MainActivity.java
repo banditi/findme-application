@@ -6,10 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -57,6 +59,7 @@ public class MainActivity extends ListActivity {
     private static String tokenKey = "5E27kyO4tAKdJdUaVy67";
 
     int userID;
+    private User currentUser = new User();
     private String friendResponse;
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
@@ -66,7 +69,7 @@ public class MainActivity extends ListActivity {
 
         @Override
         public void run() {
-            String serverURL = "http://master-igor.com/findme/getfriends/" + userID;
+            String serverURL = "http://master-igor.com/findme/getfriends/" + currentUser.getIdvk() + "/" + currentUser.getDistance() + "/";
             try {
                 //sending GET request with my own ID
                 URL url = new URL(serverURL);
@@ -106,6 +109,8 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         userID = getIntent().getIntExtra("userID", 0);
+
+        currentUser.setIdvk(userID);
 
 //        if (savedInstanceState != null) {
 //            // Restore value of members from saved state
@@ -155,7 +160,7 @@ public class MainActivity extends ListActivity {
 
                 ((TextView) view.findViewById(android.R.id.text1)).setText(user.getName());
 
-                ((TextView) view.findViewById(android.R.id.text2)).setText("distance: " + user.getDistance() + " m");
+                ((TextView) view.findViewById(android.R.id.text2)).setText("Distance: " + user.getDistance() + " m");
                 return view;
 
             }
@@ -227,7 +232,17 @@ public class MainActivity extends ListActivity {
         sendMessageToGPService();
         registerForContextMenu(getListView());
         handler.post(r);
-//        Log.d("Resume", "" + userID);
+
+//        try {
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+            int dist = Integer.parseInt(settings.getString("max_distance", "1000"));
+            currentUser.setDistance(dist);
+            Log.d("Settings", "Max dist: " + currentUser.getDistance());
+//        } catch (Exception e) {
+
+//        }
+
+        Log.d("Resume", "" + userID);
         VKUIHelper.onResume(this);
     }
 
@@ -256,7 +271,6 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        Log.d("Start", "" + userID);
     }
 
 //    @Override
