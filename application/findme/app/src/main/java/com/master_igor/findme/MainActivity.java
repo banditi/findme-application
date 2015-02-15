@@ -182,7 +182,7 @@ public class MainActivity extends ListActivity {
 
         switch(item.getItemId()){
             case R.id.cnt_mnu_geo:
-                String uri = String.format(Locale.ENGLISH, "google.navigation:q=%.6f,%.6f(%s)&mode=w",
+                String uri = String.format(Locale.ENGLISH, "google.navigation:q=%.6f,%.6f&mode=w",
                         users.get(info.position).getLatitude(),
                         users.get(info.position).getLongitude(),
                         users.get(info.position).getName());
