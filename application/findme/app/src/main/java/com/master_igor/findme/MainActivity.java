@@ -60,6 +60,7 @@ public class MainActivity extends ListActivity {
     private String friendResponse;
     private final List<User> users = new ArrayList<User>();
     private ArrayAdapter<User> listAdapter;
+    private Intent intent;
     public Handler handler = new Handler();
     private Runnable r = new Runnable() {
 
@@ -92,7 +93,7 @@ public class MainActivity extends ListActivity {
         registerReceiver(myReceiver, intentFilter);
 
         //Start our own service
-        Intent intent = new Intent(MainActivity.this, GPSHandler.class);
+        intent = new Intent(MainActivity.this, GPSHandler.class);
 
         // You can also include some extra data.
         intent.putExtra("userID", userID);
@@ -227,6 +228,7 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopService(intent);
         VKUIHelper.onDestroy(this);
     }
 
