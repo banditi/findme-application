@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -142,7 +143,16 @@ public class LoginActivity extends Activity {
                 VKApiUser user = ((VKList<VKApiUser>) response.parsedModel).get(0);
                 setMyId(user.getId());
 
-                String serverURL = "http://master-igor.com/findme/addid/" + getMyId();
+                int dist = 1000;
+//                try {
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    dist = Integer.parseInt(settings.getString("max_distance", "1000"));
+                    Log.d("Login", "Max dist: " + dist);
+//                } catch (Exception e) {
+
+//                }
+
+                String serverURL = "http://master-igor.com/findme/addid/" + getMyId() + "/" + dist + "/";
 
                 intent = new Intent(LoginActivity.this, MainActivity.class);
                 Log.d("userID in intent", "ID: " + getMyId());

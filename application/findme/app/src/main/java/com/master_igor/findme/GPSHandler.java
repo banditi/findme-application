@@ -6,12 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -61,7 +63,7 @@ public class GPSHandler extends Service {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
             String firstCoord = "http://master-igor.com/findme/setcoord/" + userID + "/" +
-                    strLat + "/" + strLon;
+                    strLat + "/" + strLon + "/";
             Log.d("FIRST", firstCoord);
             try {
                 URL url = new URL(firstCoord);
@@ -92,8 +94,11 @@ public class GPSHandler extends Service {
             } catch (NullPointerException e) {
                 strLon = "0";
             }
+
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(GPSHandler.this);
+            int dist = Integer.parseInt(settings.getString("max_distance", "1000"));
             String coord = "http://master-igor.com/findme/setcoord/" + userID + "/" +
-                    strLat + "/" + strLon;
+                    strLat + "/" + strLon + "/" + dist + "/";
 
             try {
                 URL url = new URL(coord);
