@@ -172,28 +172,28 @@ public class MainActivity extends ListActivity {
                 ((TextView) view.findViewById(R.id.secondLine)).setText("Distance: " + user.getDistance() + " m");
 
                 ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
-
-                String url_img = user.getImg();
-                URL url = null;
-                Bitmap bmp = null;
-                try {
-                    url = new URL(url_img);
-                    GetImgThread server = new GetImgThread(url);
-                    Thread thr = new Thread(server);
-                    thr.start();
-                    thr.join();
-                    bmp = BitmapFactory.decodeStream(server.getBitmap());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                Bitmap currBtm = user.getImgBtm();
+                if (currBtm == null) {
+                    String url_img = user.getImg();
+                    URL url = null;
+                    try {
+                        url = new URL(url_img);
+                        GetImgThread server = new GetImgThread(url);
+                        Thread thr = new Thread(server);
+                        thr.start();
+                        thr.join();
+                        currBtm = BitmapFactory.decodeStream(server.getBitmap());
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-//                UrlImageView urlImg = new UrlImageView(getContext());
-                avatar.setImageBitmap(bmp);
+                try {
+                    avatar.setImageBitmap(currBtm);
+                } catch (Exception e) {
 
-//                urlImg.setImageUrl("http://abc2.png");
-
-//                avatar.setImageBitmap();
+                }
 
                 return view;
 
