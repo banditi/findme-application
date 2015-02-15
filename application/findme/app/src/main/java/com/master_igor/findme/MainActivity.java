@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -44,6 +47,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -145,6 +150,8 @@ public class MainActivity extends ListActivity {
                 user.setIdvk(tempFriend.getInt("idvk"));
                 user.setLatitude(tempFriend.getDouble("lat"));
                 user.setLongitude(tempFriend.getDouble("lng"));
+                user.setImg(tempFriend.getString("img"));
+//                user.setImg("https://pp.vk.me/c622228/v622228596/1d20d/DpsgmS66AP4.jpg");
                 users.add(user);
                 Log.d("My item: ", "lala");
             }
@@ -164,7 +171,29 @@ public class MainActivity extends ListActivity {
 
                 ((TextView) view.findViewById(R.id.secondLine)).setText("Distance: " + user.getDistance() + " m");
 
-//                ((ImageView) view.findViewById(R.id.avatar)).setImageResource();
+                ImageView avatar = (ImageView) view.findViewById(R.id.avatar);
+
+                String url_img = user.getImg();
+                URL url = null;
+                Bitmap bmp = null;
+                try {
+                    url = new URL(url_img);
+                    GetImgThread server = new GetImgThread(url);
+                    Thread thr = new Thread(server);
+                    thr.start();
+                    thr.join();
+                    bmp = BitmapFactory.decodeStream(server.getBitmap());
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+//                UrlImageView urlImg = new UrlImageView(getContext());
+                avatar.setImageBitmap(bmp);
+
+//                urlImg.setImageUrl("http://abc2.png");
+
+//                avatar.setImageBitmap();
 
                 return view;
 
@@ -245,10 +274,10 @@ public class MainActivity extends ListActivity {
         handler.post(r);
 
 //        try {
-            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-            int dist = Integer.parseInt(settings.getString("max_distance", "1000"));
-            currentUser.setDistance(dist);
-            Log.d("Settings", "Max dist: " + currentUser.getDistance());
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        int dist = Integer.parseInt(settings.getString("max_distance", "1000"));
+        currentUser.setDistance(dist);
+        Log.d("Settings", "Max dist: " + currentUser.getDistance());
 //        } catch (Exception e) {
 
 //        }
