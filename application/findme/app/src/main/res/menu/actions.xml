@@ -6,7 +6,7 @@
         />
 
     <item
-        android:id="@+id/cnt_mnu_share"
-        android:title="@string/str_cnt_mnu_share"
+        android:id="@+id/cnt_mnu_write"
+        android:title="@string/str_cnt_mnu_write"
         />
 </menu>
