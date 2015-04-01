@@ -1,5 +1,7 @@
 package com.master_igor.findme;
 
+import android.graphics.Bitmap;
+
 import org.joda.time.DateTime;
 
 public class User {
@@ -10,6 +12,7 @@ public class User {
     private double longitude;
     private int distance;
     private String img;
+    private Bitmap imgBtm = null;
 
     public User() { }
 
@@ -59,5 +62,13 @@ public class User {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public Bitmap getImgBtm() {
+        return imgBtm;
+    }
+
+    public void setImg(Bitmap imgBtm) {
+        this.imgBtm = imgBtm;
     }
 }
