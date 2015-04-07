@@ -1,0 +1,11 @@
+#sec1 {
+	/*background-image: url(/static/images/bg-light-0001.gif); */
+	background-color: #fefdd3;
+}
+#sec1 h1 {
+	font-size: 5em;
+}
+#sec1 article {
+	margin-top: 10%;
+	height: 90%;
+}

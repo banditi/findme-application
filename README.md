@@ -1,5 +1,4 @@
 # FindMe
-
 Project MIPT Hackathon, which takes place in 14th-15th of February, 2015.
 
 Members of team
@@ -9,6 +8,7 @@ Members of team
 * Vadim Varnavskij via [Nipel-Crumple][]
 * Efim Krokhin via [Yefim-Krokhin][]
 * Egor Kuznecov via [kyza1994][]
+
 
 [sigorilla]: https://github.com/sigorilla "sigorilla"
 [nipel-crumple]: https://github.com/Nipel-Crumple "Nipel-Crumple"
